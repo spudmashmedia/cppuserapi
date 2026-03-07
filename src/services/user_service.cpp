@@ -1,0 +1,138 @@
+/*--------------------------------------------------------------------
+ *  Copyright (c) Spudmash Media Pty Ltd. All rights reserved.
+ *  Licensed under the MIT License.
+ *  See License.txt in the project root for license information.
+ *------------------------------------------------------------------*/
+
+// DEBUG MODE FOR JSON
+#include <stdexcept>
+#define JSON_DIAGNOSTICS 1
+
+#define CROW_DISABLE_STATIC_DIR
+#include "models/randomuser_response.hpp"
+#include "models/user.hpp"
+#include "services/user_service.h"
+#include "utils/config/config_response.hpp"
+#include "utils/http/http_client.h"
+#include <crow/logging.h>
+#include <format>
+#include <optional>
+
+namespace com_spudmash_cppuserapi::services
+{
+
+using namespace com_spudmash_cppuserapi::models;
+using namespace com_spudmash_cppuserapi::utils::http;
+using namespace com_spudmash_cppuserapi::utils::config;
+
+UserService::UserService(const ConfigResponse &cfg, HttpClient &client)
+    : cfg_(cfg), http_client_(client)
+{
+}
+
+std::optional<models::User> UserService::First()
+{
+    CROW_LOG_DEBUG << "UserService::first: entered";
+
+    try
+    {
+        auto response =
+            http_client_.Get<models::RandomUserResponse>("/api?results=1");
+
+        if (!response.results.empty())
+        {
+            CROW_LOG_DEBUG << "UserService::first: got data";
+            return response.results[0];
+        }
+    }
+    catch (const nlohmann::json::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::first: JSON exception " << e.what();
+
+        return std::nullopt;
+    }
+    catch (const std::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::first: exception " << e.what();
+
+        return std::nullopt;
+    }
+
+    CROW_LOG_DEBUG << "UserService::first: exiting";
+
+    return std::nullopt;
+}
+
+std::optional<std::vector<models::User>> UserService::FindAll(int limit)
+{
+    CROW_LOG_DEBUG << "UserService::find_all: entered";
+    if (limit <= 0)
+    {
+        throw std::invalid_argument(
+            std::format("Limit must be greater than zero (0). Got: {}", limit));
+    }
+
+    try
+    {
+        std::string path = std::format("/api?results={}", limit);
+
+        auto response = http_client_.Get<models::RandomUserResponse>(path);
+
+        if (!response.results.empty())
+        {
+            CROW_LOG_DEBUG << "UserService::find_all: got data";
+            return response.results;
+        }
+    }
+    catch (const nlohmann::json::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::find_all: JSON exception " << e.what();
+
+        return std::nullopt;
+    }
+    catch (const std::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::find_all: exception " << e.what();
+
+        return std::nullopt;
+    }
+
+    CROW_LOG_DEBUG << "UserService::find_all: exiting";
+
+    return std::nullopt;
+}
+
+std::optional<models::User> UserService::FindById(int id)
+{
+    CROW_LOG_DEBUG << "UserService::find_by_id: entered";
+
+    try
+    {
+        auto response = http_client_.Get<models::RandomUserResponse>("/api");
+
+        if (!response.results.empty())
+        {
+            CROW_LOG_DEBUG << "UserService::find_by_id: got data";
+            return response.results[0];
+        }
+    }
+    catch (const nlohmann::json::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::find_by_id: JSON exception "
+                       << e.what();
+
+        return std::nullopt;
+    }
+    catch (const std::exception &e)
+    {
+        CROW_LOG_DEBUG << "UserService::find_by_id: exception " << e.what();
+
+        return std::nullopt;
+    }
+
+    CROW_LOG_DEBUG << "UserService::find_by_id: exiting";
+
+    return std::nullopt;
+}
+
+} // namespace com_spudmash_cppuserapi::services

@@ -1,41 +1,50 @@
-# Prerequisites
-*.d
+# --- CMake ---
+# Ignore the entire build directory (assuming you use 'build' or 'out')
+build/
+out/
+# Individual CMake files if they end up in the root
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+.cache/
 
-# Compiled Object files
-*.slo
-*.lo
+# --- vcpkg ---
+vcpkg_installed/
+vcpkg/
+
+# --- Compiled Artifacts ---
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
 *.app
+*.a
+*.lib
+*.pdb
 
-# debug information files
-*.dwo
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+Network Trash Folder
+Temporary Items
+.Trashes
+
+# --- IDEs & Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.vs/
+*.user
