@@ -1,0 +1,50 @@
+# --- CMake ---
+# Ignore the entire build directory (assuming you use 'build' or 'out')
+build/
+out/
+# Individual CMake files if they end up in the root
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+.cache/
+
+# --- vcpkg ---
+vcpkg_installed/
+vcpkg/
+
+# --- Compiled Artifacts ---
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+*.app
+*.a
+*.lib
+*.pdb
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+Network Trash Folder
+Temporary Items
+.Trashes
+
+# --- IDEs & Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.vs/
+*.user

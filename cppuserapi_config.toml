@@ -1,0 +1,9 @@
+[server]
+concurrency = 4
+port = 8080
+
+[services]
+randomuser_limit = 1000
+randomuser_host = "randomuser.me"
+randomuser_port = "443"
+randomuser_path_api = "/api"

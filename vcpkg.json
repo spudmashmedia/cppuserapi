@@ -1,0 +1,13 @@
+{
+	"name": "cpp-user-api",
+	"version": "0.1.0",
+	"dependencies": [
+		"crow",
+		"nlohmann-json",
+		"tomlplusplus",
+		"openssl",
+		"boost-system",
+		"boost-asio",
+		"boost-beast"
+	]
+}
