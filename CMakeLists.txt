@@ -8,13 +8,15 @@ project(CppUserAPI CXX)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # set(CMAKE_TOOLCHAIN_FILE $VCPKG_HOME/scripts/buildsystems/vcpkg.cmake)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew")
 find_package(Crow CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system uuid)
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -26,23 +28,27 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(tomlplusplus)
 
-include_directories(
-  "src/"
-  "include/"
-)
+# include_directories(
+#   "src/"
+#   "include/"
+# )
+
+
 
 set(SOURCE_FILES
   src/main.cpp
   src/api/api.cpp
   include/utils/config/config.hpp
   include/utils/config/config_response.hpp
+  include/utils/logger/app_logger.hpp
 
   src/controllers/user_controller.cpp
+  src/controllers/health_controller.cpp
+
   src/services/user_service.cpp
 
   src/utils/http/http_client.cpp
-
-  src/controllers/health_controller.cpp
+  include/middleware/correlation_id_middleware.hpp
 
   include/dtos/json_response_base.hpp
   include/dtos/user_response.hpp
@@ -64,6 +70,13 @@ set(SOURCE_FILES
 
 # Executable
 add_executable(CppUserAPI ${SOURCE_FILES})
+
+# Target directories
+target_include_directories(CppUserAPI PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  "${CMAKE_CURRENT_SOURCE_DIR}/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
 
 # Link with Crow Library
 target_link_libraries(

@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "api/app_types.hpp"
 #include "controllers/controller_base.hpp"
 #include "controllers/get_generic_query_param_request.h"
 #include "crow.h"
@@ -20,10 +21,10 @@ class HealthController
     ~HealthController() = default;
     explicit HealthController();
 
-    void Init(crow::SimpleApp &app) override;
+    void Init(api::CppUserApiApp &app) override;
 
   private:
-    void RegisterGet(crow::SimpleApp &app) override;
+    void RegisterGet(api::CppUserApiApp &app) override;
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

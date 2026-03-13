@@ -33,12 +33,9 @@ void Api::Mount()
 
 void Api::Run()
 {
+    app_.loglevel(crow::LogLevel::Debug);
     app_.debug_print();
-    app_.port(cfg_.port)
-        .multithreaded()
-        .concurrency(cfg_.concurrency)
-        .loglevel(crow::LogLevel::Debug)
-        .run();
+    app_.port(cfg_.port).multithreaded().concurrency(cfg_.concurrency).run();
 }
 
 } // namespace com_spudmash_cppuserapi::api

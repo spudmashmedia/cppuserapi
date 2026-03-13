@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "api/app_types.hpp"
 #include "crow.h"
 #include <crow/logging.h>
 #include <nlohmann/json.hpp>
@@ -17,7 +18,7 @@ template <typename T, typename TGetQueryParams> class ControllerBase
 {
   public:
     ~ControllerBase() = default;
-    virtual void Init(crow::SimpleApp &app) {};
+    virtual void Init(api::CppUserApiApp &app) {};
 
     virtual TGetQueryParams ExtractGetQueryParameters(const crow::request &req)
     {
@@ -26,10 +27,10 @@ template <typename T, typename TGetQueryParams> class ControllerBase
     };
 
   private:
-    virtual void RegisterGet(crow::SimpleApp &app) {};
-    virtual void RegisterPost(crow::SimpleApp &app) {};
-    virtual void RegisterUpdate(crow::SimpleApp &app) {};
-    virtual void RegisterDelete(crow::SimpleApp &app) {};
+    virtual void RegisterGet(api::CppUserApiApp &app) {};
+    virtual void RegisterPost(api::CppUserApiApp &app) {};
+    virtual void RegisterUpdate(api::CppUserApiApp &app) {};
+    virtual void RegisterDelete(api::CppUserApiApp &app) {};
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

@@ -17,6 +17,8 @@
 namespace com_spudmash_cppuserapi::api
 {
 
+using namespace com_spudmash_cppuserapi::middleware;
+
 class Api
 {
   public:
@@ -26,7 +28,7 @@ class Api
 
   private:
     void Mount();
-    crow::SimpleApp app_;
+    api::CppUserApiApp app_; // See include/api/app_type.hpp
 
     utils::http::HttpClient httpClient_;
 
