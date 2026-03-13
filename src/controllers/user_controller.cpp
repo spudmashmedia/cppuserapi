@@ -25,13 +25,15 @@ using namespace com_spudmash_cppuserapi::dtos;
 using namespace com_spudmash_cppuserapi::dtos::mappers;
 using namespace com_spudmash_cppuserapi::utils::config;
 
+inline constexpr std::string PARAM_COUNT = "count";
+
 UserController::UserController(const ConfigResponse &cfg, UserService &svc)
     : cfg_(cfg), userService_(svc)
 {
     CROW_LOG_DEBUG << "UserController - ctor";
 }
 
-void UserController::Init(crow::SimpleApp &app)
+void UserController::Init(api::CppUserApiApp &app)
 {
     RegisterGet(app);
 }
@@ -50,7 +52,7 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
         return param;
     }
 
-    auto count = std::string(req.url_params.get("count"));
+    auto count = std::string(req.url_params.get(PARAM_COUNT));
 
     param.count =
         count.empty()
@@ -62,7 +64,7 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
     return param;
 }
 
-void UserController::RegisterGet(crow::SimpleApp &app)
+void UserController::RegisterGet(api::CppUserApiApp &app)
 {
     CROW_LOG_DEBUG << "UserController::RegisterGet - entering";
 

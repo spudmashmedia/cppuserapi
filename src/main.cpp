@@ -6,9 +6,11 @@
 #include "api/api.h"
 #include "utils/config/config.hpp"
 #include "utils/config/config_response.hpp"
+#include "utils/logger/app_logger.hpp"
 
 using namespace com_spudmash_cppuserapi::api;
 using namespace com_spudmash_cppuserapi::utils::config;
+using namespace com_spudmash_cppuserapi::utils::logger;
 
 int main()
 {

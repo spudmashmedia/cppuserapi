@@ -9,6 +9,7 @@
 #include "models/user.hpp"
 #include "utils/config/config_response.hpp"
 #include "utils/http/http_client.h"
+#include <string>
 
 namespace com_spudmash_cppuserapi::services
 {
@@ -25,6 +26,10 @@ class UserService
     std::optional<models::User> FindById(int id);
 
   private:
+    static constexpr char RU_API_TEMPLATE_FIRST[] = "/api?results=1";
+    static constexpr char RU_API_TEMPLATE_ALL[] = "/api?results={}";
+    static constexpr char RU_API_TEMPLATE_DEFAULT[] = "/api";
+
     const utils::config::ConfigResponse &cfg_;
     utils::http::HttpClient &http_client_;
 };

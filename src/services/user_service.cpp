@@ -37,7 +37,7 @@ std::optional<models::User> UserService::First()
     try
     {
         auto response =
-            http_client_.Get<models::RandomUserResponse>("/api?results=1");
+            http_client_.Get<models::RandomUserResponse>(RU_API_TEMPLATE_FIRST);
 
         if (!response.results.empty())
         {
@@ -74,7 +74,7 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
 
     try
     {
-        std::string path = std::format("/api?results={}", limit);
+        std::string path = std::format(RU_API_TEMPLATE_ALL, limit);
 
         auto response = http_client_.Get<models::RandomUserResponse>(path);
 
@@ -108,7 +108,8 @@ std::optional<models::User> UserService::FindById(int id)
 
     try
     {
-        auto response = http_client_.Get<models::RandomUserResponse>("/api");
+        auto response = http_client_.Get<models::RandomUserResponse>(
+            RU_API_TEMPLATE_DEFAULT);
 
         if (!response.results.empty())
         {
