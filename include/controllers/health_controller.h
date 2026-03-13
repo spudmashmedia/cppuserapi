@@ -20,9 +20,10 @@ class HealthController
     ~HealthController() = default;
     explicit HealthController();
 
-    void RegisterGet(crow::SimpleApp &app) override;
+    void Init(crow::SimpleApp &app) override;
 
   private:
+    void RegisterGet(crow::SimpleApp &app) override;
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

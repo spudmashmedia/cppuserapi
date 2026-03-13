@@ -31,6 +31,11 @@ UserController::UserController(const ConfigResponse &cfg, UserService &svc)
     CROW_LOG_DEBUG << "UserController - ctor";
 }
 
+void UserController::Init(crow::SimpleApp &app)
+{
+    RegisterGet(app);
+}
+
 GetUserQueryParamRequest
 UserController::ExtractGetQueryParameters(const crow::request &req)
 {
@@ -66,9 +71,12 @@ void UserController::RegisterGet(crow::SimpleApp &app)
             [this](const crow::request &req)
             {
                 CROW_LOG_DEBUG
-                    << "UserController::get_blueprint - call user service";
+                    << "UserController::RegisterGet - call user service";
 
                 auto param = ExtractGetQueryParameters(req);
+
+                CROW_LOG_DEBUG << "UserController::RegisterGet - count: "
+                               << param.count;
 
                 auto user_model = userService_.FindAll(param.count);
 
@@ -76,7 +84,7 @@ void UserController::RegisterGet(crow::SimpleApp &app)
                     return crow::response(crow::status::NOT_FOUND);
 
                 CROW_LOG_DEBUG
-                    << "UserController::get_blueprint - got user_model";
+                    << "UserController::RegisterGet - got user_model";
 
                 UserResponse res;
                 res = UserResponseMapper::MapFromUserModels(*user_model);

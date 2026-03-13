@@ -25,6 +25,11 @@ HealthController::HealthController()
     CROW_LOG_DEBUG << "HealthController - ctor";
 }
 
+void HealthController::Init(crow::SimpleApp &app)
+{
+    RegisterGet(app);
+}
+
 void HealthController::RegisterGet(crow::SimpleApp &app)
 {
     CROW_LOG_DEBUG << "HealthController::RegisterGet - entering";

@@ -27,8 +27,8 @@ Api::Api(const ConfigResponse cfg)
 
 void Api::Mount()
 {
-    userController_.RegisterGet(app_);
-    healthController_.RegisterGet(app_);
+    userController_.Init(app_);
+    healthController_.Init(app_);
 }
 
 void Api::Run()

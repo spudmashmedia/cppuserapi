@@ -17,11 +17,7 @@ template <typename T, typename TGetQueryParams> class ControllerBase
 {
   public:
     ~ControllerBase() = default;
-    virtual void RegisterBlueprint(crow::SimpleApp &app) {};
-    virtual void RegisterGet(crow::SimpleApp &app) {};
-    virtual void RegisterPost(crow::SimpleApp &app) {};
-    virtual void RegisterUpdate(crow::SimpleApp &app) {};
-    virtual void RegisterDelete(crow::SimpleApp &app) {};
+    virtual void Init(crow::SimpleApp &app) {};
 
     virtual TGetQueryParams ExtractGetQueryParameters(const crow::request &req)
     {
@@ -30,6 +26,10 @@ template <typename T, typename TGetQueryParams> class ControllerBase
     };
 
   private:
+    virtual void RegisterGet(crow::SimpleApp &app) {};
+    virtual void RegisterPost(crow::SimpleApp &app) {};
+    virtual void RegisterUpdate(crow::SimpleApp &app) {};
+    virtual void RegisterDelete(crow::SimpleApp &app) {};
 };
 
 } // namespace com_spudmash_cppuserapi::controllers
