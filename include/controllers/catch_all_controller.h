@@ -8,23 +8,26 @@
 
 #include "api/app_types.hpp"
 #include "controllers/controller_base.hpp"
+#include "controllers/exception_handling_base.hpp"
 #include "controllers/get_generic_query_param_request.h"
-#include <crow.h>
 
 namespace com_spudmash_cppuserapi::controllers
 {
 
-class HealthController
-    : public ControllerBase<HealthController, GetGenericQueryParamRequest>
+using namespace com_spudmash_cppuserapi::utils;
+using namespace com_spudmash_cppuserapi::api;
+
+class CatchAllController
+    : public ControllerBase<CatchAllController, GetGenericQueryParamRequest>,
+      public ExceptionHandlingBase
 {
   public:
-    ~HealthController() = default;
-    explicit HealthController();
-
+    ~CatchAllController() = default;
+    explicit CatchAllController();
     void Init(api::CppUserApiApp &app) override;
 
   private:
-    void RegisterGet(api::CppUserApiApp &app) override;
+    void RegisterCatchAll(api::CppUserApiApp &app) override;
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

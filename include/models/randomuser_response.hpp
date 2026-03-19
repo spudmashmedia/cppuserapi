@@ -5,8 +5,8 @@
  *------------------------------------------------------------------*/
 #pragma once
 
-#include "models/user.hpp"
 #include "models/info.hpp"
+#include "models/user.hpp"
 #include <nlohmann/json.hpp>
 #include <vector>
 

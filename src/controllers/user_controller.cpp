@@ -3,13 +3,14 @@
  *  Licensed under the MIT License.
  *  See License.txt in the project root for license information.
  *------------------------------------------------------------------*/
+#include <stdexcept>
 #define CROW_DISABLE_STATIC_DIR
 #include "controllers/get_user_query_param_request.h"
 #include "controllers/user_controller.h"
-#include "crow.h"
 #include "dtos/mappers/user_response_mapper.hpp"
 #include "dtos/user_response.hpp"
 #include "services/user_service.h"
+#include <crow.h>
 #include <crow/logging.h>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -46,20 +47,40 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
 
     GetUserQueryParamRequest param;
 
-    if (req.url_params.keys().size() == 0)
+    // validate if parameter exists
+    char *count_ptr = req.url_params.get(PARAM_COUNT);
+    if (!count_ptr)
     {
+        CROW_LOG_DEBUG << "ExtractGetUserParameters: cannot find count";
         param.count = 1;
         return param;
     }
 
-    auto count = std::string(req.url_params.get(PARAM_COUNT));
+    try
+    {
+        long validateLongCount =
+            std::string(count_ptr).empty() ? 1 : std::stoll(count_ptr);
 
-    param.count =
-        count.empty()
-            ? 1
-            : std::atoi(count.c_str()); // default to 1 if no query string
-    param.count = param.count > cfg_.randomuser_limit ? cfg_.randomuser_limit
-                                                      : param.count;
+        auto validateIntCount = std::atoi(count_ptr);
+
+        if (validateIntCount < 0 || validateIntCount > cfg_.randomuser_limit)
+        {
+            throw std::out_of_range(
+                std::format("0 - {}", cfg_.randomuser_limit));
+        }
+        // pass validation, clamp with max limit
+        param.count = validateIntCount;
+    }
+    catch (std::out_of_range &ex)
+    {
+        throw std::out_of_range(
+            std::format("Value out of range. Got: {}", count_ptr));
+    }
+    catch (std::invalid_argument &ex)
+    {
+        throw std::invalid_argument(
+            std::format("Invalid argument. Got: {}", count_ptr));
+    }
 
     return param;
 }

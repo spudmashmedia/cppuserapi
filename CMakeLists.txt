@@ -42,6 +42,7 @@ set(SOURCE_FILES
   include/utils/config/config_response.hpp
   include/utils/logger/app_logger.hpp
 
+  src/controllers/catch_all_controller.cpp
   src/controllers/user_controller.cpp
   src/controllers/health_controller.cpp
 

@@ -5,11 +5,13 @@
  *------------------------------------------------------------------*/
 
 #define CROW_DISABLE_STATIC_DIR
+
 #include "api/api.h"
+#include "controllers/catch_all_controller.h"
 #include "controllers/health_controller.h"
 #include "controllers/user_controller.h"
-#include "crow.h"
 #include "utils/config/config_response.hpp"
+#include <crow.h>
 
 namespace com_spudmash_cppuserapi::api
 {
@@ -19,14 +21,15 @@ using namespace com_spudmash_cppuserapi::utils::config;
 
 Api::Api(const ConfigResponse cfg)
     : cfg_(cfg), httpClient_(cfg.randomuser_host, cfg.randomuser_port),
-      userService_(cfg, httpClient_), userController_(cfg, userService_),
-      healthController_()
+      catchAllController_(), userService_(cfg, httpClient_),
+      userController_(cfg, userService_), healthController_()
 {
     Mount();
 }
 
 void Api::Mount()
 {
+    catchAllController_.Init(app_);
     userController_.Init(app_);
     healthController_.Init(app_);
 }

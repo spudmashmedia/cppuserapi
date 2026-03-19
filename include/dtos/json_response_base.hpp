@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "crow.h"
+#include <crow.h>
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -15,8 +15,14 @@ namespace com_spudmash_cppuserapi::dtos
 
 template <typename T> class JsonResponseBase : public crow::returnable
 {
+  protected:
+    nlohmann::json error_;
+
   public:
-    JsonResponseBase() : returnable("application/json") {};
+    JsonResponseBase() : returnable("application/json")
+    {
+        error_ = {{"code", 200}, {"message", "Ok"}};
+    };
 
     virtual ~JsonResponseBase() = default;
 
@@ -25,9 +31,15 @@ template <typename T> class JsonResponseBase : public crow::returnable
         return nlohmann::json{{}};
     }
 
+    void set_error(const int &code = 200, const std::string &msg = "")
+    {
+        error_ = nlohmann::json({{"code", code}, {"message", msg}});
+    }
+
     std::string dump() const override
     {
-        return nlohmann::json{{"data", this->to_json()}}.dump();
+        return nlohmann::json{{"error", error_}, {"data", this->to_json()}}
+            .dump();
     };
 };
 
