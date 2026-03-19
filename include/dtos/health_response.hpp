@@ -5,20 +5,13 @@
  *------------------------------------------------------------------*/
 #pragma once
 
-#include <nlohmann/json.hpp>
-#include <string>
+#include <dtos/json_response_base.hpp>
 
 namespace com_spudmash_cppuserapi::dtos
 {
 
-struct HealthResponse
+class HealthResponse : public JsonResponseBase<HealthResponse>
 {
-    std::string status;
-
-    nlohmann::json serialize() const
-    {
-        return nlohmann::json{{"status", status}};
-    }
 };
 
 } // namespace com_spudmash_cppuserapi::dtos

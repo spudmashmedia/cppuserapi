@@ -9,7 +9,6 @@
 #include "models/user.hpp"
 #include "utils/config/config_response.hpp"
 #include "utils/http/http_client.h"
-#include <string>
 
 namespace com_spudmash_cppuserapi::services
 {

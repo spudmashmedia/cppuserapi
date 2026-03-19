@@ -6,9 +6,9 @@
 
 #define CROW_DISABLE_STATIC_DIR
 #include "controllers/health_controller.h"
-#include "crow.h"
-#include "crow/logging.h"
 #include "dtos/health_response.hpp"
+#include <crow.h>
+#include <crow/logging.h>
 #include <nlohmann/json.hpp>
 #include <string>
 
@@ -34,16 +34,10 @@ void HealthController::RegisterGet(api::CppUserApiApp &app)
 {
     CROW_LOG_DEBUG << "HealthController::RegisterGet - entering";
 
-    HealthResponse res;
-    res.status = "OK";
+    const HealthResponse res{};
 
     CROW_ROUTE(app, "/health")
-        .methods(crow::HTTPMethod::GET)(
-            [res]()
-            {
-                return crow::response(crow::status::OK, "application/json",
-                                      res.serialize().dump());
-            });
+        .methods(crow::HTTPMethod::GET)([res]() { return res; });
 
     CROW_LOG_DEBUG << "HealthController::RegisterGet - leaving";
 }

@@ -9,10 +9,9 @@
 #include "api/app_types.hpp"
 #include "controllers/controller_base.hpp"
 #include "controllers/get_user_query_param_request.h"
-#include "crow.h"
 #include "services/user_service.h"
 #include "utils/config/config_response.hpp"
-#include <string>
+#include <crow.h>
 
 namespace com_spudmash_cppuserapi::controllers
 {

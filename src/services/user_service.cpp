@@ -58,7 +58,7 @@ std::optional<models::User> UserService::First()
         return std::nullopt;
     }
 
-    CROW_LOG_DEBUG << "UserService::first: exiting";
+    CROW_LOG_DEBUG << "UserService::first: exiting with no data";
 
     return std::nullopt;
 }
@@ -97,9 +97,9 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
         return std::nullopt;
     }
 
-    CROW_LOG_DEBUG << "UserService::find_all: exiting";
+    CROW_LOG_DEBUG << "UserService::find_all: exiting with no data";
 
-    return std::nullopt;
+    return std::vector<models::User>{};
 }
 
 std::optional<models::User> UserService::FindById(int id)
@@ -131,7 +131,7 @@ std::optional<models::User> UserService::FindById(int id)
         return std::nullopt;
     }
 
-    CROW_LOG_DEBUG << "UserService::find_by_id: exiting";
+    CROW_LOG_DEBUG << "UserService::find_by_id: exiting with no data";
 
     return std::nullopt;
 }

@@ -7,28 +7,25 @@
 #pragma once
 
 #include "dtos/json_response_base.hpp"
-#include "dtos/user_dto.hpp"
 #include <crow.h>
 #include <nlohmann/json.hpp>
-#include <vector>
+#include <string>
 
 namespace com_spudmash_cppuserapi::dtos
 {
 
-class UserResponse : public JsonResponseBase<UserResponse>
+class ErrorResponse : public JsonResponseBase<ErrorResponse>
 {
   public:
-    nlohmann::json to_json() const override
+    void set_error(const int &code = 200, const std::string &msg = "")
     {
-        std::vector<nlohmann::json> user_json_array;
-        std::transform(users.begin(), users.end(),
-                       std::back_inserter(user_json_array),
-                       [](const dtos::UserDto &user) { return user; });
-
-        return nlohmann::json{{"users", user_json_array}};
+        JsonResponseBase::set_error(code, msg);
     }
 
-    std::vector<dtos::UserDto> users;
+    std::string dump() const
+    {
+        return JsonResponseBase::dump();
+    };
 };
 
 } // namespace com_spudmash_cppuserapi::dtos
