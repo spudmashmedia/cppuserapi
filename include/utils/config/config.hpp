@@ -5,11 +5,11 @@
  *------------------------------------------------------------------*/
 #pragma once
 
-#include "toml++/toml.hpp"
 #include "utils/config/config_response.hpp"
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <toml++/toml.hpp>
 
 namespace com_spudmash_cppuserapi::utils::config
 {
@@ -68,7 +68,7 @@ class Config
     }
 
   private:
-    static constexpr std::string default_filename = "cppuserapi_config.toml";
+    static constexpr char default_filename[]{"cppuserapi_config.toml"};
 };
 
 } // namespace com_spudmash_cppuserapi::utils::config

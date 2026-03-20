@@ -19,21 +19,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system uuid)
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
-
-include(FetchContent)
-FetchContent_Declare(
-    tomlplusplus
-    GIT_REPOSITORY https://github.com/marzer/tomlplusplus.git
-    GIT_TAG        v3.4.0
-)
-FetchContent_MakeAvailable(tomlplusplus)
-
-# include_directories(
-#   "src/"
-#   "include/"
-# )
-
-
+find_package(tomlplusplus CONFIG REQUIRED)
 
 set(SOURCE_FILES
   src/main.cpp
@@ -90,4 +76,5 @@ target_link_libraries(
   OpenSSL::SSL
   OpenSSL::Crypto
   Threads::Threads
+  tomlplusplus::tomlplusplus
 )

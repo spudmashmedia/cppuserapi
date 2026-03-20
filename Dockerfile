@@ -1,25 +1,41 @@
-# GCC support can be specified at major, minor, or micro version
-# (e.g. 8, 8.2 or 8.2.0).
-# See https://hub.docker.com/r/library/gcc/ for all supported GCC
-# tags from Docker Hub.
-# See https://docs.docker.com/samples/library/gcc/ for more on how to use this image
+FROM gcc:15.2.0-trixie AS build
 
-# NGINX Alpine Slim linux/arm64/v8 - 5.77 MB
-# docker pull nginx:stable-alpine-slim
-# https://crowcpp.org/master/guides/proxies/
+# 1 - Update base image
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    zip \
+    unzip \
+    tar \
+    ca-certificates \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2 - Setup Vcpkg
+WORKDIR /usr
+RUN git clone --depth 1 https://github.com/microsoft/vcpkg.git && ./vcpkg/bootstrap-vcpkg.sh
+
+# 3 - add environment variables
+ENV VCPKG_HOME=/usr/vcpkg
+ENV PATH=$VCPKG_HOME:$PATH
+
+# 4 - Prep build directory and get vcpkg packages
+WORKDIR /usr/cppuserapi
+COPY vcpkg.json ./
+RUN vcpkg install
+COPY . .
+
+# 5 - build project
+RUN chmod +x build.sh && ./build.sh
 
 
-FROM gcc:latest
+# Use this for small final size
+FROM gcr.io/distroless/cc-debian13 AS app
 
-# These commands copy your files into the specified directory in the image
-# and set that as the working location
-COPY . /usr/src/myapp
-WORKDIR /usr/src/myapp
+# Use this for debugging
+# FROM debian:trixie-slim AS app
 
-# This command compiles your app using GCC, adjust for your source code
-RUN g++ -o myapp main.cpp
-
-# This command runs your application, comment out this line to compile only
-CMD ["./myapp"]
-
-LABEL Name=cppuserapi Version=0.0.1
+WORKDIR /app
+COPY --from=build /usr/cppuserapi/build/CppUserAPI .
+COPY --from=build /usr/cppuserapi/cppuserapi_config.toml .
+EXPOSE 3000
+ENTRYPOINT ["./CppUserAPI"]

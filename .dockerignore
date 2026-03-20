@@ -23,3 +23,9 @@
 **/values.dev.yaml
 LICENSE
 README.md
+
+vcpkg_installed/
+build/
+vcpkg_cache/
+.cmake/
+out/
