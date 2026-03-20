@@ -63,6 +63,9 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
 
         auto validateIntCount = std::atoi(count_ptr);
 
+        CROW_LOG_DEBUG << "Validating count: " << validateIntCount
+                       << " against limit: " << cfg_.randomuser_limit;
+
         if (validateIntCount < 0 || validateIntCount > cfg_.randomuser_limit)
         {
             throw std::out_of_range(

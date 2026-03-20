@@ -9,6 +9,7 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/ssl.hpp>
+#include <crow/logging.h>
 
 namespace com_spudmash_cppuserapi::utils::http
 {
@@ -58,7 +59,11 @@ string HttpClient::sendRequest(http::verb method, const string &target,
     http::read(stream, buffer, res);
 
     beast::error_code ec;
-    stream.shutdown(ec);
+    [[maybe_unused]] auto _ = stream.shutdown(ec);
+    if (ec)
+    {
+        CROW_LOG_WARNING << "Stream shutdown info: " << ec.message();
+    }
     return res.body();
 }
 

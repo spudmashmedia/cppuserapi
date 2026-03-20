@@ -26,9 +26,9 @@ class UserController
     void Init(api::CppUserApiApp &app) override;
 
   private:
-    static constexpr char PARAM_COUNT[] = "count";
+    static constexpr char PARAM_COUNT[]{"count"};
 
-    const utils::config::ConfigResponse &cfg_;
+    const utils::config::ConfigResponse cfg_;
     services::UserService &userService_;
 
     GetUserQueryParamRequest

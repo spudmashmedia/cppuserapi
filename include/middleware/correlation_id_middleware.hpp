@@ -5,18 +5,18 @@
  *------------------------------------------------------------------*/
 #pragma once
 
-#include "boost/uuid/uuid.hpp"
-#include "boost/uuid/uuid_generators.hpp"
-#include "boost/uuid/uuid_io.hpp"
-#include "crow.h"
 #include "utils/constants.hpp"
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <crow.h>
 #include <string>
 
 namespace com_spudmash_cppuserapi::middleware
 {
 
-static inline const std::string DEFAULT_ID = "NO_ID";
-static inline const int MAX_LENGTH = 64;
+static inline const std::string DEFAULT_ID{"NO_ID"};
+static inline const int MAX_LENGTH{64};
 
 struct CorrelationIdMiddleware
 {

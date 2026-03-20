@@ -10,8 +10,8 @@
 
 namespace com_spudmash_cppuserapi::utils::constants
 {
-inline constexpr std::string HEADER_CONTENT_TYPE = "Content-Type";
-inline constexpr std::string HEADER_JSON_CONTENT_TYPE = "application/json";
-inline constexpr std::string CORRELATION_ID_HEADER = "X-Correlation-Id";
+inline constexpr char HEADER_CONTENT_TYPE[] = "Content-Type";
+inline constexpr char HEADER_JSON_CONTENT_TYPE[] = "application/json";
+inline constexpr char CORRELATION_ID_HEADER[] = "X-Correlation-Id";
 
 } // namespace com_spudmash_cppuserapi::utils::constants

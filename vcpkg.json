@@ -1,6 +1,6 @@
 {
 	"name": "cpp-user-api",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"dependencies": [
 		"crow",
 		"nlohmann-json",
@@ -9,6 +9,7 @@
 		"boost-system",
 		"boost-asio",
 		"boost-beast",
-		"boost-uuid"
+		"boost-uuid",
+		"tomlplusplus"
 	]
 }
