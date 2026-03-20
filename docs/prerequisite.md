@@ -16,6 +16,7 @@ Use what ever IDE you like but this is my setup:
 - [Postman](https://www.postman.com/downloads/) if you don't want to use Httpie... just use Httpie 👍
 - [mitmproxy](https://formulae.brew.sh/cask/mitmproxy#default) for testing traffic from the API
 
+![My Setup](/docs/img/custom_terminal.png)
 
 ## For Window
-- Get a Mac
+- Just get a Mac.
