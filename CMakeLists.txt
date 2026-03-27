@@ -30,12 +30,18 @@ set(SOURCE_FILES
   include/utils/config/user_service_options.h
   include/utils/logger/app_logger.hpp
 
+  include/controllers/controller.h
+  include/controllers/base_controller.hpp
   src/controllers/catch_all_controller.cpp
   src/controllers/user_controller.cpp
   src/controllers/health_controller.cpp
 
+  include/services/base_service.hpp
+  include/services/user_service.h
   src/services/user_service.cpp
 
+  include/utils/http/http_client.hpp
+  include/utils/http/boost_http_client.h
   src/utils/http/boost_http_client.cpp
   include/middleware/correlation_id_middleware.hpp
 

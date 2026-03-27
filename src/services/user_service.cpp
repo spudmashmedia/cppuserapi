@@ -27,8 +27,8 @@ using namespace com_spudmash_cppuserapi::models;
 using namespace com_spudmash_cppuserapi::utils::http;
 using namespace com_spudmash_cppuserapi::utils::config;
 
-UserService::UserService(const UserServiceOptions &cfg, std::shared_ptr<HttpClient> client)
-    : cfg_(cfg), BaseService(std::move(client))
+UserService::UserService(UserServiceOptions cfg, std::shared_ptr<HttpClient> client)
+    : cfg_(std::move(cfg)), BaseService(std::move(client))
 {
 }
 

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "api/app_types.hpp"
-#include "controllers/controller_base.hpp"
+#include "controllers/base_controller.hpp"
 #include "controllers/exception_handling_base.hpp"
 #include "controllers/get_generic_query_param_request.h"
 
@@ -18,7 +18,7 @@ using namespace com_spudmash_cppuserapi::utils;
 using namespace com_spudmash_cppuserapi::api;
 
 class CatchAllController
-    : public ControllerBase<CatchAllController, GetGenericQueryParamRequest>,
+    : public BaseController<CatchAllController, GetGenericQueryParamRequest>,
       public ExceptionHandlingBase
 {
   public:

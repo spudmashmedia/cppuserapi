@@ -18,7 +18,7 @@ class UserService : public BaseService
 {
   public:
     ~UserService() = default;
-    explicit UserService(const utils::config::UserServiceOptions &cfg,
+    explicit UserService(utils::config::UserServiceOptions cfg,
                          std::shared_ptr<utils::http::HttpClient> client);
 
     std::optional<std::vector<models::User>> FindAll(int limit = 10);
@@ -31,7 +31,7 @@ class UserService : public BaseService
     static constexpr char RU_API_TEMPLATE_DEFAULT[]{"/api"};
 
   protected:
-    const utils::config::UserServiceOptions &cfg_;
+    utils::config::UserServiceOptions cfg_;
 };
 
 } // namespace com_spudmash_cppuserapi::services

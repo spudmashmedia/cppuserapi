@@ -10,6 +10,7 @@
 #include "dtos/mappers/user_response_mapper.hpp"
 #include "dtos/user_response.hpp"
 #include "services/user_service.h"
+#include "utils/config/user_service_options.h"
 
 #include <crow.h>
 #include <crow/logging.h>
@@ -29,8 +30,8 @@ using namespace com_spudmash_cppuserapi::utils::config;
 
 inline constexpr std::string PARAM_COUNT = "count";
 
-UserController::UserController(const ConfigResponse &cfg, UserService &svc)
-    : cfg_(cfg), userService_(svc)
+UserController::UserController(UserServiceOptions cfg, std::shared_ptr<UserService> svc)
+    : cfg_(std::move(cfg)), userService_(std::move(svc))
 {
     CROW_LOG_DEBUG << "UserController - ctor";
 }
@@ -65,12 +66,12 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
         auto validateIntCount = std::atoi(count_ptr);
 
         CROW_LOG_DEBUG << "Validating count: " << validateIntCount
-                       << " against limit: " << cfg_.userService.randomuser_limit;
+                       << " against limit: " << cfg_.randomuser_limit;
 
-        if (validateIntCount < 0 || validateIntCount > cfg_.userService.randomuser_limit)
+        if (validateIntCount < 0 || validateIntCount > cfg_.randomuser_limit)
         {
             throw std::out_of_range(
-                std::format("0 - {}", cfg_.userService.randomuser_limit));
+                std::format("0 - {}", cfg_.randomuser_limit));
         }
         // pass validation, clamp with max limit
         param.count = validateIntCount;
@@ -105,7 +106,7 @@ void UserController::RegisterGet(api::CppUserApiApp &app)
                 CROW_LOG_DEBUG << "UserController::RegisterGet - count: "
                                << param.count;
 
-                auto user_model = userService_.FindAll(param.count);
+                auto user_model = userService_->FindAll(param.count);
 
                 if (!user_model)
                     return crow::response(crow::status::NOT_FOUND);

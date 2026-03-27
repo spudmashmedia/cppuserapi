@@ -7,8 +7,10 @@
 #pragma once
 
 #include "api/app_types.hpp"
+#include "controllers/controller.h"
 #include "dtos/error_response.hpp"
 #include "utils/constants.hpp"
+
 #include <crow.h>
 #include <crow/logging.h>
 #include <nlohmann/json.hpp>
@@ -16,11 +18,12 @@
 namespace com_spudmash_cppuserapi::controllers
 {
 
-template <typename T, typename TGetQueryParams> class ControllerBase
+template <typename T, typename TGetQueryParams>
+class BaseController : public Controller
 {
   public:
-    ~ControllerBase() = default;
-    virtual void Init(api::CppUserApiApp &app) {};
+    virtual ~BaseController() = default;
+    virtual void Init(api::CppUserApiApp &app) = 0;
 
     virtual TGetQueryParams ExtractGetQueryParameters(const crow::request &req)
     {
@@ -66,6 +69,9 @@ template <typename T, typename TGetQueryParams> class ControllerBase
     {
         throw std::runtime_error("Feature not yet supported");
     };
+
+  protected:
+    BaseController() = default;
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

@@ -15,11 +15,11 @@ namespace com_spudmash_cppuserapi::services
 class BaseService
 {
   public:
-    ~BaseService() = default;
+    virtual ~BaseService() = default;
 
-    virtual std::optional<std::vector<models::User>> FindAll(int limit = 10);
-    virtual std::optional<models::User> First();
-    virtual std::optional<models::User> FindById(int id);
+    virtual std::optional<std::vector<models::User>> FindAll(int limit = 10) = 0;
+    virtual std::optional<models::User> First() = 0;
+    virtual std::optional<models::User> FindById(int id) = 0;
 
     // Remove any operators from interface
     BaseService(const BaseService &) = delete;

@@ -4,10 +4,10 @@
  *  See License.txt in the project root for license information.
  *------------------------------------------------------------------*/
 #include "api/api.h"
-// #include "controllers/catch_all_controller.h"
-// #include "controllers/health_controller.h"
-// #include "controllers/user_controller.h"
-// #include "services/user_service.h"
+#include "controllers/catch_all_controller.h"
+#include "controllers/health_controller.h"
+#include "controllers/user_controller.h"
+#include "services/user_service.h"
 #include "utils/config/config.hpp"
 #include "utils/config/config_options.h"
 #include "utils/http/boost_http_client.h"
@@ -17,8 +17,8 @@
 using namespace com_spudmash_cppuserapi::api;
 using namespace com_spudmash_cppuserapi::utils::config;
 using namespace com_spudmash_cppuserapi::utils::http;
-// using namespace com_spudmash_cppuserapi::services;
-// using namespace com_spudmash_cppuserapi::controllers;
+using namespace com_spudmash_cppuserapi::services;
+using namespace com_spudmash_cppuserapi::controllers;
 
 int main()
 {
@@ -29,19 +29,16 @@ int main()
         std::make_shared<BoostHttpClient>(cfg->userService.randomuser_host,
                                           cfg->userService.randomuser_port);
 
-    // TODO: create shared resource for userService
-    // auto userService = std::make_shared<services::UserService>(cfg, client);
+    auto userService = std::make_shared<UserService>(cfg->userService, client);
 
     Api api;
 
     try
     {
-        api.AddConfig(cfg)
-            .AddHttpClient(client)
-            // .AddService<UserServices>()
-            // .AddController<HealthController>()
-            // .AddController<CatchAllController>()
-            // .AddController<UserController>()
+        api.AddConfig(cfg->api)
+            .AddController<HealthController>()
+            .AddController<CatchAllController>()
+            .AddController<UserController>(cfg->userService, userService)
             .Build();
 
         api.Run();
