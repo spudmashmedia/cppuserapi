@@ -10,3 +10,19 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortBlocksOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
+
+# Ensures .AddConfig().AddService() breaks nicely
+# 'true' will try to keep them wrapped, 'false' lets them hang
+AlignAfterOpenBracket: Align
+AlwaysBreakAfterReturnType: None
+# This replaces the Java style call for C++
+BinPackArguments: false
+BinPackParameters: false
+
+# 0 means "don't wrap based on length," but it can cause "sideways scrolling" 
+# usually 100 or 120 is better for "Peak Performance" readability!
+ColumnLimit: 0
+
+# Fixes the 'include' sorting so your custom headers don't get buried
+SortIncludes: true
+IncludeBlocks: Regroup

@@ -11,6 +11,8 @@
 #include "controllers/health_controller.h"
 #include "controllers/user_controller.h"
 #include "utils/config/config_response.hpp"
+#include "utils/http/http_client.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::api
@@ -18,27 +20,35 @@ namespace com_spudmash_cppuserapi::api
 
 using namespace com_spudmash_cppuserapi::controllers;
 using namespace com_spudmash_cppuserapi::utils::config;
+using namespace com_spudmash_cppuserapi::utils::http;
 
-Api::Api(const ConfigResponse cfg)
-    : cfg_(cfg), httpClient_(cfg.randomuser_host, cfg.randomuser_port),
-      catchAllController_(), userService_(cfg, httpClient_),
-      userController_(cfg, userService_), healthController_()
+Api &Api::AddConfig(std::shared_ptr<ConfigResponse> cfg)
 {
-    Mount();
+    cfg_ = std::move(cfg);
+    return *this;
 }
 
-void Api::Mount()
+Api &Api::AddHttpClient(std::shared_ptr<HttpClient> client)
+{
+    httpClient_ = std::move(client);
+    return *this;
+}
+
+void Api::Build()
 {
     catchAllController_.Init(app_);
-    userController_.Init(app_);
     healthController_.Init(app_);
+    // userController_.Init(app_);
 }
 
 void Api::Run()
 {
     app_.loglevel(crow::LogLevel::Debug);
     app_.debug_print();
-    app_.port(cfg_.port).multithreaded().concurrency(cfg_.concurrency).run();
+    app_.port(cfg_->port)
+        .multithreaded()
+        .concurrency(cfg_->concurrency)
+        .run();
 }
 
 } // namespace com_spudmash_cppuserapi::api

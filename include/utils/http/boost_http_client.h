@@ -5,6 +5,7 @@
  *------------------------------------------------------------------*/
 #pragma once
 
+#include "utils/http/http_client.h"
 #include <boost/asio/connect.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core.hpp>
@@ -16,13 +17,12 @@
 namespace com_spudmash_cppuserapi::utils::http
 {
 
-class HttpClient
+class BoostHttpClient : public HttpClient
 {
   public:
-    virtual ~HttpClient() = default;
+    explicit BoostHttpClient(std::string host, std::string port = "443");
 
-    template <typename T>
-    T Get(const std::string &target)
+    template <typename T> T Get(const std::string &target)
     {
         std::string raw =
             sendRequest(boost::beast::http::verb::get, target, "");
@@ -37,16 +37,15 @@ class HttpClient
         return nlohmann::json::parse(raw).get<T>();
     }
 
-    // Remove any operators from interface
-    HttpClient(const HttpClient &) = delete;
-    HttpClient &operator=(const HttpClient &) = delete;
+  private:
+    std::string host_;
+    std::string port_;
+    boost::asio::ssl::context ctx_;
 
   protected:
-    HttpClient() = default; // Stops anything instantiating this interface
-
-    virtual std::string sendRequest(boost::beast::http::verb method,
-                                    const std::string &target,
-                                    const std::string &body) = 0;
+    std::string sendRequest(boost::beast::http::verb method,
+                            const std::string &target,
+                            const std::string &body) override;
 };
 
 } // namespace com_spudmash_cppuserapi::utils::http

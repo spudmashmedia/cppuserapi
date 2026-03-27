@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew")
 find_package(Crow CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system uuid)
+find_package(Boost CONFIG REQUIRED COMPONENTS system uuid)
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
 find_package(tomlplusplus CONFIG REQUIRED)
@@ -34,7 +34,7 @@ set(SOURCE_FILES
 
   src/services/user_service.cpp
 
-  src/utils/http/http_client.cpp
+  src/utils/http/boost_http_client.cpp
   include/middleware/correlation_id_middleware.hpp
 
   include/dtos/json_response_base.hpp

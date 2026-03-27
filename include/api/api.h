@@ -12,6 +12,7 @@
 #include "services/user_service.h"
 #include "utils/config/config_response.hpp"
 #include "utils/http/http_client.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::api
@@ -23,22 +24,22 @@ class Api
 {
   public:
     ~Api() = default;
-    Api(const utils::config::ConfigResponse cfg);
+    Api &AddConfig(std::shared_ptr<utils::config::ConfigResponse> cfg);
+    Api &AddHttpClient(std::shared_ptr<utils::http::HttpClient> client);
+    void Build();
     void Run();
 
   private:
-    void Mount();
     api::CppUserApiApp app_; // See include/api/app_type.hpp
 
-    utils::http::HttpClient httpClient_;
+    std::shared_ptr<utils::config::ConfigResponse> cfg_;
+    std::shared_ptr<utils::http::HttpClient> httpClient_;
 
     controllers::CatchAllController catchAllController_;
-
-    services::UserService userService_;
-    controllers::UserController userController_;
-
     controllers::HealthController healthController_;
-    const utils::config::ConfigResponse cfg_;
+
+    // services::UserService userService_;
+    // controllers::UserController userController_;
 };
 
 } // namespace com_spudmash_cppuserapi::api
