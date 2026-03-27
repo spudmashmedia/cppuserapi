@@ -10,8 +10,8 @@
 #include "controllers/health_controller.h"
 #include "controllers/user_controller.h"
 #include "services/user_service.h"
-#include "utils/config/config_response.hpp"
-#include "utils/http/http_client.h"
+#include "utils/config/config_options.h"
+#include "utils/http/http_client.hpp"
 
 #include <crow.h>
 

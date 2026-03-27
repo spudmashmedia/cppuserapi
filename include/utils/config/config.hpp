@@ -5,7 +5,10 @@
  *------------------------------------------------------------------*/
 #pragma once
 
-#include "utils/config/config_response.hpp"
+#include "utils/config/api_options.h"
+#include "utils/config/config_options.h"
+#include "utils/config/user_service_options.h"
+
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -43,25 +46,25 @@ class Config
         //
         if (auto server = raw_config["server"].as_table())
         {
-            config.port = (*server)["port"].value_or(config.port);
-            config.concurrency =
-                (*server)["concurrency"].value_or(config.concurrency);
+            config.api.port = (*server)["port"].value_or(config.api.port);
+            config.api.concurrency =
+                (*server)["concurrency"].value_or(config.api.concurrency);
         }
 
         if (auto services = raw_config["services"].as_table())
         {
-            config.randomuser_limit = (*services)["randomuser_limit"].value_or(
-                config.randomuser_limit);
+            config.userService.randomuser_limit = (*services)["randomuser_limit"].value_or(
+                config.userService.randomuser_limit);
 
-            config.randomuser_host =
-                (*services)["randomuser_host"].value_or(config.randomuser_host);
+            config.userService.randomuser_host =
+                (*services)["randomuser_host"].value_or(config.userService.randomuser_host);
 
-            config.randomuser_port =
-                (*services)["randomuser_port"].value_or(config.randomuser_port);
+            config.userService.randomuser_port =
+                (*services)["randomuser_port"].value_or(config.userService.randomuser_port);
 
-            config.randomuser_path_api =
+            config.userService.randomuser_path_api =
                 (*services)["randomuser_path_api"].value_or(
-                    config.randomuser_path_api);
+                    config.userService.randomuser_path_api);
         }
 
         return config;

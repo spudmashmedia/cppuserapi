@@ -7,18 +7,19 @@
 #pragma once
 
 #include "models/user.hpp"
-#include "utils/config/config_response.hpp"
-#include "utils/http/http_client.h"
+#include "services/base_service.hpp"
+#include "utils/config/user_service_options.h"
+#include "utils/http/http_client.hpp"
 
 namespace com_spudmash_cppuserapi::services
 {
 
-class UserService
+class UserService : public BaseService
 {
   public:
     ~UserService() = default;
-    explicit UserService(const utils::config::ConfigResponse &cfg,
-                         utils::http::HttpClient &client);
+    explicit UserService(const utils::config::UserServiceOptions &cfg,
+                         std::shared_ptr<utils::http::HttpClient> client);
 
     std::optional<std::vector<models::User>> FindAll(int limit = 10);
     std::optional<models::User> First();
@@ -29,8 +30,8 @@ class UserService
     static constexpr char RU_API_TEMPLATE_ALL[]{"/api?results={}"};
     static constexpr char RU_API_TEMPLATE_DEFAULT[]{"/api"};
 
-    const utils::config::ConfigResponse &cfg_;
-    utils::http::HttpClient &http_client_;
+  protected:
+    const utils::config::UserServiceOptions &cfg_;
 };
 
 } // namespace com_spudmash_cppuserapi::services

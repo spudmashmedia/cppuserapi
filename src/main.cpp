@@ -9,7 +9,7 @@
 // #include "controllers/user_controller.h"
 // #include "services/user_service.h"
 #include "utils/config/config.hpp"
-#include "utils/config/config_response.hpp"
+#include "utils/config/config_options.h"
 #include "utils/http/boost_http_client.h"
 
 #include <stdexcept>
@@ -26,8 +26,8 @@ int main()
     auto cfg =
         std::make_shared<ConfigResponse>(Config::read_config());
     auto client =
-        std::make_shared<BoostHttpClient>(cfg->randomuser_host,
-                                          cfg->randomuser_port);
+        std::make_shared<BoostHttpClient>(cfg->userService.randomuser_host,
+                                          cfg->userService.randomuser_port);
 
     // TODO: create shared resource for userService
     // auto userService = std::make_shared<services::UserService>(cfg, client);

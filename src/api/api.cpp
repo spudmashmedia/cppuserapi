@@ -9,9 +9,9 @@
 #include "api/api.h"
 #include "controllers/catch_all_controller.h"
 #include "controllers/health_controller.h"
-#include "controllers/user_controller.h"
-#include "utils/config/config_response.hpp"
-#include "utils/http/http_client.h"
+// #include "controllers/user_controller.h"
+#include "utils/config/config_options.h"
+#include "utils/http/http_client.hpp"
 
 #include <crow.h>
 
@@ -45,9 +45,9 @@ void Api::Run()
 {
     app_.loglevel(crow::LogLevel::Debug);
     app_.debug_print();
-    app_.port(cfg_->port)
+    app_.port(cfg_->api.port)
         .multithreaded()
-        .concurrency(cfg_->concurrency)
+        .concurrency(cfg_->api.concurrency)
         .run();
 }
 

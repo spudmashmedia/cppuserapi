@@ -10,6 +10,7 @@
 #include "dtos/mappers/user_response_mapper.hpp"
 #include "dtos/user_response.hpp"
 #include "services/user_service.h"
+
 #include <crow.h>
 #include <crow/logging.h>
 #include <nlohmann/json.hpp>
@@ -64,12 +65,12 @@ UserController::ExtractGetQueryParameters(const crow::request &req)
         auto validateIntCount = std::atoi(count_ptr);
 
         CROW_LOG_DEBUG << "Validating count: " << validateIntCount
-                       << " against limit: " << cfg_.randomuser_limit;
+                       << " against limit: " << cfg_.userService.randomuser_limit;
 
-        if (validateIntCount < 0 || validateIntCount > cfg_.randomuser_limit)
+        if (validateIntCount < 0 || validateIntCount > cfg_.userService.randomuser_limit)
         {
             throw std::out_of_range(
-                std::format("0 - {}", cfg_.randomuser_limit));
+                std::format("0 - {}", cfg_.userService.randomuser_limit));
         }
         // pass validation, clamp with max limit
         param.count = validateIntCount;

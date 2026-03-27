@@ -10,7 +10,8 @@
 #include "controllers/controller_base.hpp"
 #include "controllers/get_user_query_param_request.h"
 #include "services/user_service.h"
-#include "utils/config/config_response.hpp"
+#include "utils/config/config_options.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::controllers

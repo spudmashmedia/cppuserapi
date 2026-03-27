@@ -25,7 +25,9 @@ set(SOURCE_FILES
   src/main.cpp
   src/api/api.cpp
   include/utils/config/config.hpp
-  include/utils/config/config_response.hpp
+  include/utils/config/config_options.h
+  include/utils/config/api_options.h
+  include/utils/config/user_service_options.h
   include/utils/logger/app_logger.hpp
 
   src/controllers/catch_all_controller.cpp
