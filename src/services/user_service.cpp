@@ -101,7 +101,7 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
 
     CROW_LOG_DEBUG << "UserService::find_all: exiting with no data";
 
-    return std::vector<models::User>{};
+    return std::nullopt;
 }
 
 std::optional<models::User> UserService::FindById(int id)

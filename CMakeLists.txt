@@ -1,3 +1,12 @@
+#------------------------------------------------------------------
+#  Copyright (c) Spudmash Media Pty Ltd. All rights reserved.
+#  Licensed under the MIT License.
+#  See License.txt in the project root for license information.
+#------------------------------------------------------------------
+
+#
+# Main Build Binary
+# 
 cmake_minimum_required(VERSION 3.15)
 
 if(POLICY CMP0167)
@@ -21,8 +30,7 @@ find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
 find_package(tomlplusplus CONFIG REQUIRED)
 
-set(SOURCE_FILES
-  src/main.cpp
+set(APP_LOGIC_SOURCES
   src/api/api.cpp
   include/utils/config/config.hpp
   include/utils/config/config_options.h
@@ -63,19 +71,18 @@ set(SOURCE_FILES
   include/models/user.hpp
 )
 
-# Executable
-add_executable(CppUserAPI ${SOURCE_FILES})
+# Create app_logic target
+add_library(app_logic STATIC ${APP_LOGIC_SOURCES})
 
 # Target directories
-target_include_directories(CppUserAPI PRIVATE
-  ${Boost_INCLUDE_DIRS}
+target_include_directories(app_logic PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src"
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 # Link with Crow Library
 target_link_libraries(
-  CppUserAPI PRIVATE
+  app_logic PUBLIC
   Crow::Crow
   asio::asio
   nlohmann_json::nlohmann_json
@@ -86,3 +93,32 @@ target_link_libraries(
   Threads::Threads
   tomlplusplus::tomlplusplus
 )
+
+add_executable(CppUserAPI src/main.cpp)
+target_link_libraries(CppUserAPI PRIVATE app_logic)
+
+
+#
+# Test Binary  - reuse app_logic for testing
+# 
+option(BUILD_TESTS "Build unit tests" ON)
+
+if(BUILD_TESTS)
+  enable_testing()
+  find_package(GTest CONFIG REQUIRED)
+
+  add_executable(CppUserApi_Tests
+    tests/main.cpp
+    tests/services/user_service_test.cpp
+  )
+
+  target_link_libraries(CppUserApi_Tests PRIVATE
+    app_logic
+    GTest::gtest_main
+    GTest::gmock
+  )
+
+  target_include_directories(CppUserApi_Tests PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests"
+  )
+endif()
