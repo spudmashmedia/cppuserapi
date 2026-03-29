@@ -21,9 +21,9 @@ class UserService : public BaseService
     explicit UserService(utils::config::UserServiceOptions cfg,
                          std::shared_ptr<utils::http::HttpClient> client);
 
-    std::optional<std::vector<models::User>> FindAll(int limit = 10);
-    std::optional<models::User> First();
-    std::optional<models::User> FindById(int id);
+    std::optional<std::vector<models::User>> FindAll(int limit = 10) override;
+    std::optional<models::User> First() override;
+    std::optional<models::User> FindById(int id) override;
 
   private:
     static constexpr char RU_API_TEMPLATE_FIRST[]{"/api?results=1"};

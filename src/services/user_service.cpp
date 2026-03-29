@@ -106,36 +106,7 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
 
 std::optional<models::User> UserService::FindById(int id)
 {
-    CROW_LOG_DEBUG << "UserService::find_by_id: entered";
-
-    try
-    {
-        auto response = http_client_->Get<models::RandomUserResponse>(
-            RU_API_TEMPLATE_DEFAULT);
-
-        if (!response.results.empty())
-        {
-            CROW_LOG_DEBUG << "UserService::find_by_id: got data";
-            return response.results[0];
-        }
-    }
-    catch (const nlohmann::json::exception &e)
-    {
-        CROW_LOG_DEBUG << "UserService::find_by_id: JSON exception "
-                       << e.what();
-
-        return std::nullopt;
-    }
-    catch (const std::exception &e)
-    {
-        CROW_LOG_DEBUG << "UserService::find_by_id: exception " << e.what();
-
-        return std::nullopt;
-    }
-
-    CROW_LOG_DEBUG << "UserService::find_by_id: exiting with no data";
-
-    return std::nullopt;
+    throw std::logic_error("Not Implemented");
 }
 
 } // namespace com_spudmash_cppuserapi::services

@@ -4,6 +4,7 @@
  *  See License.txt in the project root for license information.
  *------------------------------------------------------------------*/
 
+#include "mocks/user_data_mocks.hpp"
 #include "mocks/utils/http/mock_http_client.hpp"
 #include "models/user.hpp"
 #include "services/user_service.h"
@@ -12,99 +13,282 @@
 #include <boost/beast/http.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 namespace com_spudmash_cppuserapi::services
 {
-
 namespace
 {
+
 using boost::beast::http::verb;
+using com_spudmash_cppuserapi::tests::mocks::UserDataMocks;
 using ::testing::_;
 using ::testing::An;
 using ::testing::Return;
+using ::testing::Throw;
 
 class UserServiceTest : public ::testing::Test
 {
   protected:
     utils::config::UserServiceOptions mock_cfg_;
     std::shared_ptr<utils::http::MockHttpClient> mock_client_;
-    std::unique_ptr<services::UserService> sut_;
+    std::shared_ptr<services::UserService> sut_;
 
     void SetUp()
     {
         mock_client_ = std::make_shared<utils::http::MockHttpClient>();
-        sut_ = std::make_unique<services::UserService>(mock_cfg_, mock_client_);
+        sut_ = std::make_shared<services::UserService>(mock_cfg_, mock_client_);
     }
 };
 
-TEST_F(UserServiceTest, FindAll_2_Should_return_2_users)
+void ValidateUser(const nlohmann::json &expected,
+                  const models::User &actual)
+{
+    ASSERT_EQ(expected["name"]["title"],
+              actual.name.title);
+
+    ASSERT_EQ(expected["name"]["title"],
+              actual.name.title);
+
+    ASSERT_EQ(expected["name"]["first"],
+              actual.name.first);
+
+    ASSERT_EQ(expected["name"]["last"],
+              actual.name.last);
+
+    ASSERT_EQ(expected["gender"],
+              actual.gender);
+
+    ASSERT_EQ(expected["location"]["street"]["number"],
+              actual.location.street.number);
+
+    ASSERT_EQ(expected["location"]["street"]["name"],
+              actual.location.street.name);
+
+    ASSERT_EQ(expected["location"]["city"],
+              actual.location.city);
+
+    ASSERT_EQ(expected["location"]["state"],
+              actual.location.state);
+
+    ASSERT_EQ(expected["location"]["country"],
+              actual.location.country);
+
+    ASSERT_EQ(std::format("{}", expected["location"]["postcode"].dump()),
+              actual.location.postcode);
+
+    ASSERT_EQ(expected["location"]["coordinates"]["latitude"],
+              actual.location.coordinates.latitude);
+
+    ASSERT_EQ(expected["location"]["coordinates"]["longitude"],
+              actual.location.coordinates.longitude);
+
+    ASSERT_EQ(expected["location"]["timezone"]["description"],
+              actual.location.timezone.description);
+
+    ASSERT_EQ(expected["location"]["timezone"]["offset"],
+              actual.location.timezone.offset);
+
+    ASSERT_EQ(expected["email"],
+              actual.email);
+
+    ASSERT_EQ(expected["login"]["uuid"],
+              actual.login.uuid);
+
+    ASSERT_EQ(expected["login"]["username"],
+              actual.login.username);
+
+    ASSERT_EQ(expected["login"]["password"],
+              actual.login.password);
+
+    ASSERT_EQ(expected["login"]["salt"],
+              actual.login.salt);
+
+    ASSERT_EQ(expected["login"]["md5"],
+              actual.login.md5);
+
+    ASSERT_EQ(expected["login"]["sha1"],
+              actual.login.sha1);
+
+    ASSERT_EQ(expected["login"]["sha256"],
+              actual.login.sha256);
+
+    ASSERT_EQ(expected["dob"],
+              actual.dob);
+
+    ASSERT_EQ(expected["registered"]["date"],
+              actual.registered.date);
+
+    ASSERT_EQ(expected["registered"]["age"],
+              actual.registered.age);
+
+    ASSERT_EQ(expected["phone"],
+              actual.phone);
+
+    ASSERT_EQ(expected["cell"],
+              actual.cell);
+
+    ASSERT_EQ(expected["id"]["name"],
+              actual.id.name);
+
+    ASSERT_EQ(expected["id"]["value"],
+              actual.id.value);
+
+    ASSERT_EQ(expected["picture"]["large"],
+              actual.picture.large);
+
+    ASSERT_EQ(expected["picture"]["medium"],
+              actual.picture.medium);
+
+    ASSERT_EQ(expected["picture"]["thumbnail"],
+              actual.picture.thumbnail);
+
+    ASSERT_EQ(expected["nat"],
+              actual.nat);
+}
+
+TEST_F(UserServiceTest, FindAll_2_Should_Return_2_Users)
 {
     // Arrange
-    // std::string mockResponse = R"({"results":[{"gender":"female","name":{"title":"Miss","first":"Silje","last":"Pedersen"},"location":{"street":{"number":7655,"name":"Nordsøvej"},"city":"Viby J.","state":"Sjælland","country":"Denmark","postcode":67645,"coordinates":{"latitude":"-38.6713","longitude":"37.4389"},"timezone":{"offset":"+5:45","description":"Kathmandu"}},"email":"silje.pedersen@example.com","login":{"uuid":"db4cc9fc-af78-4073-a59a-33d7b41d4ca0","username":"redelephant308","password":"monkey1","salt":"8CGcCoAw","md5":"6a052cce2e68e6417eab5174ec5c5390","sha1":"7199d69bab2e7b5c41c83516ee30bc8d56491c62","sha256":"b48adb245072658f5dbc53946b839bd2be5df12a3d362310fe103acb62ce60bc"},"dob":{"date":"1992-07-27T13:15:54.358Z","age":33},"registered":{"date":"2012-02-18T03:22:44.502Z","age":14},"phone":"20827609","cell":"23508048","id":{"name":"CPR","value":"270792-9503"},"picture":{"large":"https://randomuser.me/api/portraits/women/70.jpg","medium":"https://randomuser.me/api/portraits/med/women/70.jpg","thumbnail":"https://randomuser.me/api/portraits/thumb/women/70.jpg"},"nat":"DK"},{"gender":"male","name":{"title":"Mr","first":"Hugo","last":"Costa"},"location":{"street":{"number":5046,"name":"Rua Vinte E Um"},"city":"Jequié","state":"Piauí","country":"Brazil","postcode":73417,"coordinates":{"latitude":"85.7252","longitude":"-76.8088"},"timezone":{"offset":"+9:00","description":"Tokyo, Seoul, Osaka, Sapporo, Yakutsk"}},"email":"hugo.costa@example.com","login":{"uuid":"680d17cf-8140-4073-a8f7-ab77d98f8a2a","username":"purplelion868","password":"bonsai","salt":"BE2JH7GP","md5":"6d233c1b1e57cb12700094372bd5da88","sha1":"f8c982763189f29c7f8a483efc4915a0771ecd52","sha256":"5fd9f64078b5116b7c691d89590e367cc2f663134e0d937f0f8eeb86952ed401"},"dob":{"date":"1967-12-09T13:57:46.677Z","age":58},"registered":{"date":"2006-04-06T05:42:12.223Z","age":19},"phone":"(57) 1266-0530","cell":"(82) 7515-3544","id":{"name":"CPF","value":"169.027.829-34"},"picture":{"large":"https://randomuser.me/api/portraits/men/68.jpg","medium":"https://randomuser.me/api/portraits/med/men/68.jpg","thumbnail":"https://randomuser.me/api/portraits/thumb/men/68.jpg"},"nat":"BR"}],"info":{"seed":"6f2443af3c512241","results":2,"page":1,"version":"1.4"}})";
-    std::string mockResponse = R"({
-  "results": [
-    {
-      "gender": "male",
-      "name": { "title": "Mr", "first": "Kyoutarou", "last": "Ichikawa" },
-      "location": {
-        "street": { "number": 1, "name": "Library St" },
-        "city": "Meguro", "state": "Tokyo", "country": "Japan", "postcode": 1530063,
-        "coordinates": { "latitude": "35.6339", "longitude": "139.7081" },
-        "timezone": { "offset": "+9:00", "description": "Tokyo" }
-      },
-      "email": "kyoutarou.ichikawa@example.com",
-      "login": {
-        "uuid": "550e8400-e29b-4d44-a716-446655440000",
-        "username": "dark_knight_01", "password": "password123",
-        "salt": "salt1", "md5": "md5_1", "sha1": "sha1_1", "sha256": "sha256_1"
-      },
-      "dob": { "date": "2008-03-26T00:00:00.000Z", "age": 16 },
-      "registered": { "date": "2023-01-01T00:00:00.000Z", "age": 1 },
-      "phone": "03-1234-5678", "cell": "090-1234-5678",
-      "id": { "name": "STUDENT_ID", "value": "2024-001" },
-      "picture": { "large": "https://example.com", "medium": "https://example.com", "thumbnail": "https://example.com" },
-      "nat": "JP"
-    },
-    {
-      "gender": "female",
-      "name": { "title": "Miss", "first": "Anna", "last": "Yamada" },
-      "location": {
-        "street": { "number": 2, "name": "Snack Aisle Ave" },
-        "city": "Meguro", "state": "Tokyo", "country": "Japan", "postcode": 1530063,
-        "coordinates": { "latitude": "35.6339", "longitude": "139.7081" },
-        "timezone": { "offset": "+9:00", "description": "Tokyo" }
-      },
-      "email": "anna.yamada@example.com",
-      "login": {
-        "uuid": "661f9511-f30c-5e55-b827-557766551111",
-        "username": "sweets_queen", "password": "marshmallow",
-        "salt": "salt2", "md5": "md5_2", "sha1": "sha1_2", "sha256": "sha256_2"
-      },
-      "dob": { "date": "2008-09-10T00:00:00.000Z", "age": 16 },
-      "registered": { "date": "2023-02-01T00:00:00.000Z", "age": 1 },
-      "phone": "03-8765-4321", "cell": "080-8765-4321",
-      "id": { "name": "STUDENT_ID", "value": "2024-002" },
-      "picture": { "large": "https://example.com", "medium": "https://example.com", "thumbnail": "https://example.com" },
-      "nat": "JP"
-    }
-  ],
-  "info": { "seed": "bokuyaba", "results": 2, "page": 1, "version": "1.4" }
-})";
+    auto test_data_ = UserDataMocks::GenerateData(2);
+    int test_count_ = 2;
 
     EXPECT_CALL(*mock_client_,
                 sendRequest(verb::get,
                             An<const std::string &>(),
                             _))
-        .WillOnce(Return(mockResponse));
+        .WillOnce(Return(test_data_.dump()));
 
     // Act
-    auto actual_response_ = sut_->FindAll(2);
+    std::optional<std::vector<models::User>> actual_response_ =
+        sut_->FindAll(test_count_);
 
     // Assert
     ASSERT_NE(actual_response_, std::nullopt);
-    ASSERT_EQ(actual_response_->size(), 2);
+    ASSERT_EQ(actual_response_->size(), test_count_);
+
+    for (auto i = 0; i < actual_response_->size(); i++)
+    {
+        ValidateUser(test_data_["results"][i], actual_response_->at(i));
+    }
+}
+
+TEST_F(UserServiceTest, FindAll_When_Limit_Is_Zero_Should_Throw_InvalidArgumentException)
+{
+    // Arrange
+    auto test_data_ = UserDataMocks::GenerateData(0);
+    const std::string expected_msg_ = "Limit must be greater than zero (0). Got: 0";
+
+    // Act
+    // Assert
+    EXPECT_THROW({
+          try {
+            sut_->FindAll(0);
+            }
+          catch(std::invalid_argument ex){
+            ASSERT_EQ(expected_msg_, ex.what());
+            throw;
+          } }, std::invalid_argument);
+}
+
+TEST_F(UserServiceTest, FindAll_When_No_Results_Return_Nullopt)
+{
+    // Arrange
+    auto test_data_ = UserDataMocks::GenerateData(1);
+
+    EXPECT_CALL(*mock_client_,
+                sendRequest(verb::get,
+                            An<const std::string &>(),
+                            _))
+        .WillOnce(Return(UserDataMocks::USER_RESULTS_ZERO_.dump()));
+
+    // Act
+    std::optional<std::vector<models::User>> actual_response_ =
+        sut_->FindAll(1);
+
+    // Assert
+    ASSERT_EQ(actual_response_, std::nullopt);
+}
+
+TEST_F(UserServiceTest, FindAll_When_HttpClient_ThrowsException_Should_Return_Nullopt)
+{
+    // Arrange
+    EXPECT_CALL(*mock_client_,
+                sendRequest(verb::get,
+                            An<const std::string &>(),
+                            _))
+        .WillOnce(Return(UserDataMocks::BAD_JSON_.dump()));
+
+    // Act
+    std::optional<std::vector<models::User>> actual_response_ =
+        sut_->FindAll(1);
+
+    // Assert
+    ASSERT_EQ(actual_response_, std::nullopt);
+}
+
+TEST_F(UserServiceTest, First_Should_Return_User)
+{
+    // Arrange
+    auto test_data_ = UserDataMocks::GenerateData(1);
+
+    EXPECT_CALL(*mock_client_,
+                sendRequest(verb::get,
+                            An<const std::string &>(),
+                            _))
+        .WillOnce(Return(test_data_.dump()));
+
+    // Act
+    std::optional<models::User> actual_response_ =
+        sut_->First();
+
+    // Assert
+    ASSERT_NE(actual_response_, std::nullopt);
+    ValidateUser(test_data_["results"][0], actual_response_.value());
+}
+
+TEST_F(UserServiceTest, First_When_No_Results_Return_Nullopt)
+{
+    // Arrange
+    auto test_data_ = UserDataMocks::GenerateData(1);
+
+    EXPECT_CALL(*mock_client_,
+                sendRequest(verb::get,
+                            An<const std::string &>(),
+                            _))
+        .WillOnce(Return(UserDataMocks::USER_RESULTS_ZERO_.dump()));
+
+    // Act
+    std::optional<models::User> actual_response_ =
+        sut_->First();
+
+    // Assert
+    ASSERT_EQ(actual_response_, std::nullopt);
+}
+
+TEST_F(UserServiceTest, First_When_HttpClient_ThrowsException_Should_Return_Nullopt)
+{
+    // Arrange
+    EXPECT_CALL(*mock_client_,
+                sendRequest(verb::get,
+                            An<const std::string &>(),
+                            _))
+        .WillOnce(Return(UserDataMocks::BAD_JSON_.dump()));
+
+    // Act
+    std::optional<models::User> actual_response_ =
+        sut_->First();
+
+    // Assert
+    ASSERT_EQ(actual_response_, std::nullopt);
 }
 
 } // namespace
 
 } // namespace com_spudmash_cppuserapi::services
+
+int main(int argc, char **argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
