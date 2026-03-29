@@ -7,29 +7,30 @@
 #pragma once
 
 #include "api/app_types.hpp"
-#include "controllers/controller_base.hpp"
+#include "controllers/base_controller.hpp"
 #include "controllers/get_user_query_param_request.h"
 #include "services/user_service.h"
-#include "utils/config/config_response.hpp"
+#include "utils/config/user_service_options.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::controllers
 {
 
 class UserController
-    : public ControllerBase<UserController, GetUserQueryParamRequest>
+    : public BaseController<UserController, GetUserQueryParamRequest>
 {
   public:
     ~UserController() = default;
-    explicit UserController(const utils::config::ConfigResponse &cfg,
-                            services::UserService &svc);
+    explicit UserController(utils::config::UserServiceOptions cfg,
+                            std::shared_ptr<services::UserService> svc);
     void Init(api::CppUserApiApp &app) override;
 
   private:
     static constexpr char PARAM_COUNT[]{"count"};
 
-    const utils::config::ConfigResponse cfg_;
-    services::UserService &userService_;
+    utils::config::UserServiceOptions cfg_;
+    std::shared_ptr<services::UserService> userService_;
 
     GetUserQueryParamRequest
     ExtractGetQueryParameters(const crow::request &req) override;

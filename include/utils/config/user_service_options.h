@@ -10,13 +10,8 @@
 namespace com_spudmash_cppuserapi::utils::config
 {
 
-struct ConfigResponse
+struct UserServiceOptions
 {
-    // Server
-    int port{8080};
-    int concurrency{20};
-
-    // Random User Endpoint
     int randomuser_limit{10};
     std::string randomuser_host{"randomuser.me"};
     std::string randomuser_port{"443"};

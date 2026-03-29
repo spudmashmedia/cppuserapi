@@ -11,9 +11,11 @@
 #define CROW_DISABLE_STATIC_DIR
 #include "models/randomuser_response.hpp"
 #include "models/user.hpp"
+#include "services/base_service.hpp"
 #include "services/user_service.h"
-#include "utils/config/config_response.hpp"
-#include "utils/http/http_client.h"
+#include "utils/config/user_service_options.h"
+#include "utils/http/http_client.hpp"
+
 #include <crow/logging.h>
 #include <format>
 #include <optional>
@@ -25,8 +27,8 @@ using namespace com_spudmash_cppuserapi::models;
 using namespace com_spudmash_cppuserapi::utils::http;
 using namespace com_spudmash_cppuserapi::utils::config;
 
-UserService::UserService(const ConfigResponse &cfg, HttpClient &client)
-    : cfg_(cfg), http_client_(client)
+UserService::UserService(UserServiceOptions cfg, std::shared_ptr<HttpClient> client)
+    : cfg_(std::move(cfg)), BaseService(std::move(client))
 {
 }
 
@@ -37,7 +39,7 @@ std::optional<models::User> UserService::First()
     try
     {
         auto response =
-            http_client_.Get<models::RandomUserResponse>(RU_API_TEMPLATE_FIRST);
+            http_client_->Get<models::RandomUserResponse>(RU_API_TEMPLATE_FIRST);
 
         if (!response.results.empty())
         {
@@ -76,7 +78,7 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
     {
         std::string path = std::format(RU_API_TEMPLATE_ALL, limit);
 
-        auto response = http_client_.Get<models::RandomUserResponse>(path);
+        auto response = http_client_->Get<models::RandomUserResponse>(path);
 
         if (!response.results.empty())
         {
@@ -99,41 +101,12 @@ std::optional<std::vector<models::User>> UserService::FindAll(int limit)
 
     CROW_LOG_DEBUG << "UserService::find_all: exiting with no data";
 
-    return std::vector<models::User>{};
+    return std::nullopt;
 }
 
 std::optional<models::User> UserService::FindById(int id)
 {
-    CROW_LOG_DEBUG << "UserService::find_by_id: entered";
-
-    try
-    {
-        auto response = http_client_.Get<models::RandomUserResponse>(
-            RU_API_TEMPLATE_DEFAULT);
-
-        if (!response.results.empty())
-        {
-            CROW_LOG_DEBUG << "UserService::find_by_id: got data";
-            return response.results[0];
-        }
-    }
-    catch (const nlohmann::json::exception &e)
-    {
-        CROW_LOG_DEBUG << "UserService::find_by_id: JSON exception "
-                       << e.what();
-
-        return std::nullopt;
-    }
-    catch (const std::exception &e)
-    {
-        CROW_LOG_DEBUG << "UserService::find_by_id: exception " << e.what();
-
-        return std::nullopt;
-    }
-
-    CROW_LOG_DEBUG << "UserService::find_by_id: exiting with no data";
-
-    return std::nullopt;
+    throw std::logic_error("Not Implemented");
 }
 
 } // namespace com_spudmash_cppuserapi::services

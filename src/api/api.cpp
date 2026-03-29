@@ -4,13 +4,13 @@
  *  See License.txt in the project root for license information.
  *------------------------------------------------------------------*/
 
+#include <stdexcept>
 #define CROW_DISABLE_STATIC_DIR
 
 #include "api/api.h"
-#include "controllers/catch_all_controller.h"
-#include "controllers/health_controller.h"
-#include "controllers/user_controller.h"
-#include "utils/config/config_response.hpp"
+#include "controllers/controller.h"
+#include "utils/config/api_options.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::api
@@ -19,26 +19,33 @@ namespace com_spudmash_cppuserapi::api
 using namespace com_spudmash_cppuserapi::controllers;
 using namespace com_spudmash_cppuserapi::utils::config;
 
-Api::Api(const ConfigResponse cfg)
-    : cfg_(cfg), httpClient_(cfg.randomuser_host, cfg.randomuser_port),
-      catchAllController_(), userService_(cfg, httpClient_),
-      userController_(cfg, userService_), healthController_()
+Api &Api::AddConfig(utils::config::ApiOptions cfg)
 {
-    Mount();
+    cfg_ = std::move(cfg);
+    return *this;
 }
 
-void Api::Mount()
+void Api::Build()
 {
-    catchAllController_.Init(app_);
-    userController_.Init(app_);
-    healthController_.Init(app_);
+    if (controllers_.size() <= 0)
+    {
+        throw std::invalid_argument("No Controllers Registered");
+    }
+
+    for (const auto &c : controllers_)
+    {
+        c->Init(app_);
+    }
 }
 
 void Api::Run()
 {
     app_.loglevel(crow::LogLevel::Debug);
     app_.debug_print();
-    app_.port(cfg_.port).multithreaded().concurrency(cfg_.concurrency).run();
+    app_.port(cfg_.port)
+        .multithreaded()
+        .concurrency(cfg_.concurrency)
+        .run();
 }
 
 } // namespace com_spudmash_cppuserapi::api

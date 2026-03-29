@@ -1,4 +1,12 @@
 # Testing
+
+## Unit Test
+Unit Tests are bundled during CMake step. Run the binary:
+
+```
+./build/CppUserApi_Tests
+```
+
 ## Test Scenarios
 
 ### Test: /Health should return response HTTP 200

@@ -7,25 +7,19 @@
 #pragma once
 
 #include "api/app_types.hpp"
-#include "controllers/base_controller.hpp"
-#include "controllers/get_generic_query_param_request.h"
 
 #include <crow.h>
+#include <crow/logging.h>
+#include <nlohmann/json.hpp>
 
 namespace com_spudmash_cppuserapi::controllers
 {
 
-class HealthController
-    : public BaseController<HealthController, GetGenericQueryParamRequest>
+class Controller
 {
   public:
-    ~HealthController() = default;
-    explicit HealthController();
-
-    void Init(api::CppUserApiApp &app) override;
-
-  private:
-    void RegisterGet(api::CppUserApiApp &app) override;
+    virtual ~Controller() = default;
+    virtual void Init(api::CppUserApiApp &app) = 0;
 };
 
 } // namespace com_spudmash_cppuserapi::controllers

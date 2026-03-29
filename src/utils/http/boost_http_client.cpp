@@ -4,7 +4,7 @@
  *  See License.txt in the project root for license information.
  *------------------------------------------------------------------*/
 
-#include "utils/http/http_client.h"
+#include "utils/http/boost_http_client.h"
 #include <boost/asio/connect.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -21,14 +21,14 @@ namespace ssl = net::ssl;
 using tcp = net::ip::tcp;
 using string = std::string;
 
-HttpClient::HttpClient(string host, string port)
+BoostHttpClient::BoostHttpClient(string host, string port)
     : host_(std::move(host)), port_(std::move(port)),
       ctx_(ssl::context::tlsv12_client)
 {
 }
 
-string HttpClient::sendRequest(http::verb method, const string &target,
-                               const string &body)
+string BoostHttpClient::sendRequest(http::verb method, const string &target,
+                                    const string &body)
 {
     net::io_context ioc;
     tcp::resolver resolver(ioc);

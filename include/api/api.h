@@ -6,39 +6,35 @@
 #pragma once
 
 #define CROW_DISABLE_STATIC_DIR
-#include "controllers/catch_all_controller.h"
-#include "controllers/health_controller.h"
-#include "controllers/user_controller.h"
-#include "services/user_service.h"
-#include "utils/config/config_response.hpp"
-#include "utils/http/http_client.h"
+
+#include "controllers/controller.h"
+#include "utils/config/api_options.h"
+
 #include <crow.h>
 
 namespace com_spudmash_cppuserapi::api
 {
 
-using namespace com_spudmash_cppuserapi::middleware;
-
 class Api
 {
   public:
     ~Api() = default;
-    Api(const utils::config::ConfigResponse cfg);
+    Api &AddConfig(utils::config::ApiOptions cfg);
+
+    template <typename T, typename... Args>
+    Api &AddController(Args &&...args)
+    {
+        controllers_.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+        return *this;
+    }
+
+    void Build();
     void Run();
 
   private:
-    void Mount();
     api::CppUserApiApp app_; // See include/api/app_type.hpp
-
-    utils::http::HttpClient httpClient_;
-
-    controllers::CatchAllController catchAllController_;
-
-    services::UserService userService_;
-    controllers::UserController userController_;
-
-    controllers::HealthController healthController_;
-    const utils::config::ConfigResponse cfg_;
+    utils::config::ApiOptions cfg_;
+    std::vector<std::unique_ptr<controllers::Controller>> controllers_;
 };
 
 } // namespace com_spudmash_cppuserapi::api

@@ -10,6 +10,8 @@
 #include "dtos/mappers/user_response_mapper.hpp"
 #include "dtos/user_response.hpp"
 #include "services/user_service.h"
+#include "utils/config/user_service_options.h"
+
 #include <crow.h>
 #include <crow/logging.h>
 #include <nlohmann/json.hpp>
@@ -28,8 +30,8 @@ using namespace com_spudmash_cppuserapi::utils::config;
 
 inline constexpr std::string PARAM_COUNT = "count";
 
-UserController::UserController(const ConfigResponse &cfg, UserService &svc)
-    : cfg_(cfg), userService_(svc)
+UserController::UserController(UserServiceOptions cfg, std::shared_ptr<UserService> svc)
+    : cfg_(std::move(cfg)), userService_(std::move(svc))
 {
     CROW_LOG_DEBUG << "UserController - ctor";
 }
@@ -104,7 +106,7 @@ void UserController::RegisterGet(api::CppUserApiApp &app)
                 CROW_LOG_DEBUG << "UserController::RegisterGet - count: "
                                << param.count;
 
-                auto user_model = userService_.FindAll(param.count);
+                auto user_model = userService_->FindAll(param.count);
 
                 if (!user_model)
                     return crow::response(crow::status::NOT_FOUND);
